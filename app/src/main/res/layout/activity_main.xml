@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_Main">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_gameStartBtn"
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:text="@string/main_game_start"
+                android:textSize="18sp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/main_gameRuleBtn"
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/main_game_info"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:gravity="end|bottom"
+        android:text="@string/app_creator" />
+
+  </FrameLayout>
