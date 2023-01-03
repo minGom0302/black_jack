@@ -1,24 +1,34 @@
 package com.example.black_jack;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Activity_Game extends AppCompatActivity {
-    TextView countTv;
-    ImageView cardBack, dealer_back01, dealer_back02, dealer_back03, dealer_back04, dealer_back05, myCard01, myCard02, myCard03, myCard04, myCard05;
-    ImageView cardBack01, cardBack02, cardBack03, cardBack04;
+    TextView countTv, moneyTv, totalMoneyTv;
+    ImageView cardBack;
+    ImageView cardBack01;
     Button goBtn, stopBtn;
 
     Card cardActivity;
@@ -26,151 +36,135 @@ public class Activity_Game extends AppCompatActivity {
     ArrayList<Card> dealerCards;
     ArrayList<Card> myCards;
     Dealer dealer;
+    RecyclerView myRecyclerView, dealerRecyclerView;
+    Adapter_card myAdapterCard, dealerAdapterCard;
+    Animation animation, animationReverse;
+    SharedPreferences sp;
+    SharedPreferences.Editor sp_e;
+    DecimalFormat format = new DecimalFormat("###,###");
+    backspaceHandler bsHandler = new backspaceHandler(this);
 
+    int i = 0;
     int mySum = 0;
     int dealerSum = 0;
-    int count = 0;
     int myACount = 0;
     int dealerACount = 0;
+    int iMoney = 0;
+    int iTotalMoney = 0;
     boolean myA = false;
     boolean dealerA = false;
+    boolean mySet = true;
+    boolean dealerSet = true;
+    String money;
+    String nowMoney;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sp_e = sp.edit();
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        cardBack01 = findViewById(R.id.game_cardBack01);
-        cardBack02 = findViewById(R.id.game_cardBack02);
-        cardBack03 = findViewById(R.id.game_cardBack03);
-        cardBack04 = findViewById(R.id.game_cardBack04);
-        countTv = findViewById(R.id.game_countTv);
+        animation = AnimationUtils.loadAnimation(Activity_Game.this, R.anim.anim_translate);
+        animation.setAnimationListener(animationListener);
+        animationReverse = AnimationUtils.loadAnimation(Activity_Game.this, R.anim.anim_translate_reverse);
+        animationReverse.setAnimationListener(animationReverseListener);
+
+        myRecyclerView = findViewById(R.id.game_myRecyclerView);
+        dealerRecyclerView = findViewById(R.id.game_dealerRecyclerView);
+
         cardBack = findViewById(R.id.game_cardBack);
-        dealer_back01 = findViewById(R.id.game_img_back01);
-        dealer_back02 = findViewById(R.id.game_img_back02);
-        dealer_back03 = findViewById(R.id.game_img_back03);
-        dealer_back04 = findViewById(R.id.game_img_back04);
-        dealer_back05 = findViewById(R.id.game_img_back05);
-        myCard01 = findViewById(R.id.game_myCard01);
-        myCard02 = findViewById(R.id.game_myCard02);
-        myCard03 = findViewById(R.id.game_myCard03);
-        myCard04 = findViewById(R.id.game_myCard04);
-        myCard05 = findViewById(R.id.game_myCard05);
+        cardBack01 = findViewById(R.id.game_cardBack01);
+        countTv = findViewById(R.id.game_countTv);
+        totalMoneyTv = findViewById(R.id.game_TotalMoneyTv);
+        moneyTv = findViewById(R.id.game_moneyTv);
         goBtn = findViewById(R.id.game_goBtn);
         stopBtn = findViewById(R.id.game_stopBtn);
 
-        goBtn.setOnClickListener(v -> {
-            moveCard();
-        });
-        stopBtn.setOnClickListener(v -> {
-            whoWin();
-        });
+        goBtn.setEnabled(false);
+        stopBtn.setEnabled(false);
 
-        setting();
-    }
+        String money = sp.getString("money", "100");
+        String s1 = format.format(Integer.parseInt(money));
+        moneyTv.setText("보유금액 : " + s1 + "만원");
 
-    private void moveCard() {
-        count ++;
-        ImageView img = null;
-        switch (count) {
-            case 1 :
-                img = cardBack01;
-                break;
-            case 2 :
-                img = cardBack02;
-                break;
-            case 3 :
-                img = cardBack03;
-                break;
-            case 4 :
-                img = cardBack04;
-                break;
-        }
+        goBtn.setOnClickListener(v -> moveCard(0));
+        stopBtn.setOnClickListener(v -> whoWin());
 
-        if(img != null) {
-            ImageView finalImg = img;
-            img.animate().translationY(500).rotation(180).setDuration(1000).withLayer().withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    finalImg.setVisibility(View.GONE);
-                    go();
-                }
-            });
-        }
-    }
-
-    private void go() {
-        myCards.add(dealer.getCard(cards));
-        sum(1);
-        switch (count) {
-            case 1 :
-                cardActivity.setMyImage(myCards.get(count), myCard02);
-                myCard02.setVisibility(View.VISIBLE);
-                break;
-            case 2 :
-                cardActivity.setMyImage(myCards.get(count), myCard03);
-                myCard03.setVisibility(View.VISIBLE);
-                break;
-            case 3 :
-                cardActivity.setMyImage(myCards.get(count), myCard04);
-                myCard04.setVisibility(View.VISIBLE);
-                break;
-            case 4 :
-                cardActivity.setMyImage(myCards.get(count), myCard05);
-                myCard05.setVisibility(View.VISIBLE);
-                break;
-        }
-        myCard01.setVisibility(View.VISIBLE);
-        countTv.setText(String.valueOf(mySum));
-
-        if(mySum > 21) {
-            isBust(1);
-        }
-    }
-
-    private void setting() {
-        // 딜러 먼저 카드 셋팅하고 나 go/stop
         cardActivity = new Card();
         dealerCards = new ArrayList<>();
         myCards = new ArrayList<>();
         dealer = new Dealer();
-        // 나눠가질 카드 뭉치 만들기 (54장 가득)
+        // 나눠가질 카드 뭉치 만들기 (52장 가득) > 3묶음 함
         cards = dealer.setCards();
 
-        myCards.add(dealer.getCard(cards));
+        Intent intent = new Intent(Activity_Game.this, Activity_Popup.class);
+        startActivityForResult(intent, 100);
+    }
 
-        sum(1);
+    private void setting() {
+        // 나 2장, 딜러 2장으로 카드 셋팅 후 21확인
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    if(i < 2) {
+                        moveCard(0);
+                    } else if(i == 2) {
+                        moveCard(1);
+                    } else if(i == 3) {
+                        moveCard(1);
+                        blackJackCheck();
+                    }
+                    i++;
+                });
+            }
+        };
+        timer.schedule(timerTask, 0, 1300);
+    }
 
-        cardActivity.setMyImage(myCards.get(0), myCard01);
-        myCard01.setVisibility(View.VISIBLE);
+    private void moveCard(int cnd) {
+        int i = 0;
+        Animation a = null;
+        if(cnd == 0) {
+             i = View.VISIBLE;
+             a = animation;
+        } else if(cnd == 1) {
+             i = View.INVISIBLE;
+             a = animationReverse;
+        }
+        cardBack01.setVisibility(i);
+        cardBack.startAnimation(a);
+    }
 
-        countTv.setText(String.valueOf(mySum));
+    private void go(int cnd) {
+        if(cnd == 0) {
+            // 내 카드 뽑아서 화면에 보여주고 셋팅
+            myCards.add(dealer.getCard(cards));
+            sum(1);
+            myAdapterCard.setCardList(myCards, 0);
+            myRecyclerView.removeAllViews();
+            myRecyclerView.setAdapter(myAdapterCard);
 
-        // 딜러와 카드 하나씩 나눠가지면서 2장씩 가져야함
-        for(int i=0; i<5; i++) {
-            if(dealerSum < 17) {
-                Card card = dealer.getCard(cards);
-                dealerCards.add(card);
-                Log.i("dealer card", card.getShape() + card.getNumber());
-                //dealerCards.add(dealer.getCard(cards));
-                sum(0);
-                Log.i("dealer sum",  i + "번째 합 : " + dealerSum);
-                if(i == 0) {
-                    cardActivity.setMyImage(card, dealer_back01);
-                    dealer_back01.setVisibility(View.VISIBLE);
-                } else if(i == 1) {
-                    dealer_back02.setVisibility(View.VISIBLE);
-                } else if(i == 2) {
-                    dealer_back03.setVisibility(View.VISIBLE);
-                } else if(i == 3) {
-                    dealer_back04.setVisibility(View.VISIBLE);
-                } else {
-                    dealer_back05.setVisibility(View.VISIBLE);
-                }
-            } else if(dealerSum > 21) {
+            countTv.setText(String.valueOf(mySum));
+
+            if(mySum > 21) {
+                isBust(1);
+            }
+
+        } else if(cnd == 1) {
+            // 딜러 카드 뽑아서 화면에 셋팅
+            dealerCards.add(dealer.getCard(cards));
+            sum(0);
+            dealerAdapterCard.setCardList(dealerCards, 1);
+            dealerAdapterCard.setFirst(0);
+            dealerRecyclerView.setAdapter(dealerAdapterCard);
+
+            if(dealerSum > 21) {
                 isBust(0);
             }
         }
@@ -178,6 +172,7 @@ public class Activity_Game extends AppCompatActivity {
 
     private void sum(int cnd) {
         if(cnd == 0) {
+            // 딜러 총합 계산
             dealerSum = 0;
             dealerACount = 0;
             for(int i=0; i<dealerCards.size(); i++) {
@@ -186,7 +181,7 @@ public class Activity_Game extends AppCompatActivity {
 
                 if(num == 1) {
                     dealerA = true;
-                    dealerSum += 10;
+                    dealerSum += 11;
                     dealerACount ++;
                 } else {
                     // num 과 10을 비교하여 작은 걸 가져옴
@@ -194,7 +189,7 @@ public class Activity_Game extends AppCompatActivity {
                 }
             }
 
-            if(dealerSum >= 21 && dealerA) {
+            if(dealerSum > 21 && dealerA) {
                 for(int i=0; i<dealerACount; i++) {
                     dealerSum -= 9;
                     if(dealerSum <= 21) {
@@ -205,6 +200,7 @@ public class Activity_Game extends AppCompatActivity {
         }
 
         if (cnd == 1) {
+            // 나 총합 계산
             mySum = 0;
             myACount = 0;
             for(int i=-0; i<myCards.size(); i++) {
@@ -212,65 +208,109 @@ public class Activity_Game extends AppCompatActivity {
                 int num = Integer.parseInt(card.getNumber());
 
                 if(num == 1) {
-                    Log.i("my card num", "카드 1 일치하여 들어옴");
                     myA = true;
-                    mySum += 10;
+                    mySum += 11;
                     myACount ++;
                 } else {
-                    Log.i("my Card Num", "카드 1 이외의 숫자들임");
                     // num 과 10을 비교하여 작은 걸 가져옴
                     mySum += Math.min(num, 10);
                 }
             }
 
-            if(mySum >= 21 && myA) {
+            if(mySum > 21 && myA) {
                 for(int i=0; i<myACount; i++) {
                     mySum -= 9;
-                    Log.i("mySum", "현재 내 합계 : " + mySum);
                     if(mySum <= 21) {
                         return;
                     }
                 }
             }
-            Log.i("mySum", "현재 내 합계 : " + mySum);
         }
     }
 
+    private void blackJackCheck() {
+        // 블랙잭 (A와 10) 확인
+        new Handler().postDelayed(() -> {
+            goBtn.setEnabled(true);
+            stopBtn.setEnabled(true);
+            if(dealerSum == 21) {
+                showDialog("Black Jack!!", "딜러가 Black Jack을 달성했습니다.\n당신의 패배입니다.");
+                moneyCal(0);
+            } else if(mySum == 21) {
+                showDialog("Black Jack!!", "당신이 Black Jack을 달성했습니다.\n당신의 승리입니다.");
+                moneyCal(3);
+            }
+        }, 1300);
+    }
+
     private void isBust(int cnd) {
-        showCard();
+        // 누군가 21을 초과했을 때
+        dealerAdapterCard.setFirst(1);
+        dealerRecyclerView.setAdapter(dealerAdapterCard);
+
         if(cnd == 0) {
             showDialog("Bust!", "딜러의 합은 " + dealerSum + "이므로 당신의 승리입니다.");
+            moneyCal(2);
         } else if(cnd == 1) {
             showDialog("Bust!", "당신의 패가 21을 넘어 패배했습니다.");
+            moneyCal(0);
         }
     }
 
     private void whoWin() {
-        showCard();
-        if(dealerSum > mySum) {
-            showDialog("딜러의 승리!", "딜러의 합은 " + dealerSum + "이므로 당신의 패배입니다.");
-        } else if(dealerSum == mySum) {
-            showDialog("무승부!", "딜러의 합과 당신의 합이 같아 무승부입니다.");
-        } else {
-            showDialog("당신의 승리!", "딜러의 합은 " + dealerSum + "이므로 당신의 승리입니다.");
-        }
+        // 승부
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    if(dealerSum < 17) {
+                        moveCard(1);
+                    } else if(dealerSum > 21) {
+                        isBust(0);
+                        timer.cancel();
+                    } else {
+                        dealerAdapterCard.setFirst(1);
+                        dealerRecyclerView.setAdapter(dealerAdapterCard);
+
+                        if(dealerSum > mySum) {
+                            showDialog("딜러의 승리!", "딜러의 합은 " + dealerSum + "이므로 당신의 패배입니다.");
+                            moneyCal(0);
+                        } else if(dealerSum == mySum) {
+                            showDialog("무승부!", "딜러의 합과 당신의 합이 같아 무승부입니다.");
+                            moneyCal(1);
+                        } else {
+                            showDialog("당신의 승리!", "딜러의 합은 " + dealerSum + "이므로 당신의 승리입니다.");
+                            moneyCal(2);
+                        }
+                        timer.cancel();
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 0, 1300);
+
     }
 
-    private void showCard() {
-        // 카드 앞면으로 바꾸기
-        for(int i=1; i<dealerCards.size(); i++) {
-            Card card = dealerCards.get(i);
+    private void moneyCal(int num) {
+        iMoney = Integer.parseInt(nowMoney);
+        iTotalMoney = Integer.parseInt(money);
 
-            if(i == 1) {
-                cardActivity.setMyImage(card, dealer_back02);
-            } else if(i == 2) {
-                cardActivity.setMyImage(card, dealer_back03);
-            } else if(i == 3) {
-                cardActivity.setMyImage(card, dealer_back04);
-            } else if(i == 4) {
-                cardActivity.setMyImage(card, dealer_back05);
-            }
-        }
+        iTotalMoney = iTotalMoney * num;
+        iMoney = iMoney + iTotalMoney;
+        sp_e.putString("money", String.valueOf(iMoney));
+        sp_e.commit();
+    }
+
+    private void finishGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Game.this);
+        builder.setTitle("안내").setMessage("보유 금액이 없습니다.\n첫 화면에서 금액 초기화를 해주세요.");
+        // 버튼의 위치때문에 말과 실행문을 반대로 함
+        builder.setPositiveButton("첫 화면으로", (dialogInterface, i) -> finish());
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
     }
 
     private void showDialog(String title, String msg) {
@@ -280,13 +320,93 @@ public class Activity_Game extends AppCompatActivity {
         builder.setPositiveButton("게임 종료", (dialogInterface, i) -> finish());
 
         builder.setNeutralButton("다시 시작", (dialogInterface, i) -> {
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
+            if(iMoney == 0) {
+                finishGame();
+            } else {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
         });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.setCancelable(false);
         alertDialog.show();
+    }
+
+    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) { }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if(mySet) {
+                // 내가 카드 받고 합을 확인하고 adpater를 통해 recyclerview 에 표현
+                myCards.add(dealer.getCard(cards));
+                sum(1);
+                myAdapterCard = new Adapter_card(myCards);
+                myRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
+                myRecyclerView.setAdapter(myAdapterCard);
+
+                countTv.setText(String.valueOf(mySum));
+
+                mySet = false;
+            } else {
+                go(0);
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) { }
+    };
+
+    Animation.AnimationListener animationReverseListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) { }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if(dealerSet) {
+                // 딜러 카드 셋팅 > 첫 장은 보이게
+                dealerCards.add(dealer.getCard(cards));
+                sum(0);
+                dealerAdapterCard = new Adapter_card(dealerCards);
+                dealerRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
+                dealerRecyclerView.setAdapter(dealerAdapterCard);
+
+                dealerSet = false;
+            } else {
+                go(1);
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) { }
+    };
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100) {
+            if(resultCode == RESULT_OK) {
+                if(data != null) {
+                    money = data.getStringExtra("money");
+                    nowMoney = data.getStringExtra("resultMoney");
+
+                    String s1 = format.format(Integer.parseInt(money));
+                    String s2 = format.format(Integer.parseInt(nowMoney));
+
+                    totalMoneyTv.setText("현재 배팅액 : " + s1 + "만원");
+                    moneyTv.setText("보유 금액 : " + s2 + "만원");
+                    setting();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        bsHandler.onBackPressed("'뒤로가기' 버튼을 한번 더 누르면 종료됩니다.\n또한 배팅한 금액은 돌려주지 않습니다.", 0);
     }
 }

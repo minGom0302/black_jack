@@ -12,124 +12,94 @@
         android:src="@drawable/background_game"
         android:scaleType="centerCrop"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/game_TotalMoneyTv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="90dp"
+        android:text="현재 배팅 : 10억"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:textStyle="bold"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/game_dealerRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="130dp"
         android:layout_marginTop="10dp"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/game_img_back01"
-            android:layout_width="85dp"
-            android:layout_height="130dp"
-
-            android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/game_img_back02"
-            android:layout_width="85dp"
-            android:layout_height="130dp"
-            android:src="@drawable/back"
-            android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/game_img_back03"
-            android:layout_width="85dp"
-            android:layout_height="130dp"
-            android:src="@drawable/back"
-            android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/game_img_back04"
-            android:layout_width="85dp"
-            android:layout_height="130dp"
-            android:src="@drawable/back"
-            android:visibility="gone"/>
-        <ImageView
-            android:id="@+id/game_img_back05"
-            android:layout_width="85dp"
-            android:layout_height="130dp"
-            android:src="@drawable/back"
-            android:visibility="gone"/>
-    </LinearLayout>
+        android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal">
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/game_goBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:text="go"/>
+                android:text="HIT" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/game_stopBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:text="stop"/>
+                android:text="STAY" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/game_moneyTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="보유 금액 : 21조 39억"
+            android:textColor="#000000"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:gravity="end">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="현재 합 : "
-                android:textSize="16sp"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/game_countTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:textSize="16sp"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:textSize="16sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/game_myCard01"
-                android:layout_width="85dp"
-                android:layout_height="130dp"
-                android:visibility="invisible"/>
-            <ImageView
-                android:id="@+id/game_myCard02"
-                android:layout_width="85dp"
-                android:layout_height="130dp"
-                android:visibility="gone"/>
-            <ImageView
-                android:id="@+id/game_myCard03"
-                android:layout_width="85dp"
-                android:layout_height="130dp"
-                android:visibility="gone"/>
-            <ImageView
-                android:id="@+id/game_myCard04"
-                android:layout_width="85dp"
-                android:layout_height="130dp"
-                android:visibility="gone"/>
-            <ImageView
-                android:id="@+id/game_myCard05"
-                android:layout_width="85dp"
-                android:layout_height="130dp"
-                android:visibility="gone"/>
-        </LinearLayout>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/game_myRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_width="85dp"
+        android:layout_height="130dp"
+        android:src="@drawable/back"/>
     <ImageView
         android:id="@+id/game_cardBack"
         android:layout_gravity="center"
@@ -138,24 +108,6 @@
         android:src="@drawable/back"/>
     <ImageView
         android:id="@+id/game_cardBack01"
-        android:layout_gravity="center"
-        android:layout_width="85dp"
-        android:layout_height="130dp"
-        android:src="@drawable/back"/>
-    <ImageView
-        android:id="@+id/game_cardBack02"
-        android:layout_gravity="center"
-        android:layout_width="85dp"
-        android:layout_height="130dp"
-        android:src="@drawable/back"/>
-    <ImageView
-        android:id="@+id/game_cardBack03"
-        android:layout_gravity="center"
-        android:layout_width="85dp"
-        android:layout_height="130dp"
-        android:src="@drawable/back"/>
-    <ImageView
-        android:id="@+id/game_cardBack04"
         android:layout_gravity="center"
         android:layout_width="85dp"
         android:layout_height="130dp"

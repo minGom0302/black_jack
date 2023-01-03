@@ -10,7 +10,7 @@ public class Dealer {
     public ArrayList<Card> setCards() {
         ArrayList<Card> cards = new ArrayList<>();
 
-        for(int i=0; i<52; i++) {
+        for(int i=0; i<156; i++) {
             Card card = new Card();
             int v1 = i%4;
             if(v1 == 0) {
