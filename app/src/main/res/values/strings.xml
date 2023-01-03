@@ -10,16 +10,18 @@
     <string name="popup_name">배팅액 :</string>
     <string name="popup_info">만원</string>
     <string name="rules_gameInfo">게임 설명</string>
-    <string name="rules_gameRules">게임 규칙</string>
-    <string name="rules_rulesText">1) 각자 카드를 뽑아 숫자의 합이 21에 가깝게 만들면 됩니다.\n2) 21을 초과하면 \'Bust\'가 되어 패배합니다.\n3) 계산 방법\n  - A(ace)는 1 혹은 11\n  - J, Q, K는 10\n  - 나머지는 숫자 그대로 합산됩니다.\n  예) 받은 카드가 5, A, A 라면 5 + 1 + 11 = 17 입니다.\n플레이어는 원하는 만큼 카드를 받을 수 있고\n딜러는 17 이상이면 추가 카드를 받지 않습니다.</string>
-    <string name="rules_blackJack">블랙잭!</string>
+    <string name="rules_gameRules">※ 게임 규칙</string>
+    <string name="rules_rulesText">1) 각자 카드를 뽑아 숫자의 합이 21에 가깝게 만들면 됩니다.\n2) 21을 초과하면 \'Bust\'가 되어 패배합니다.\n3) 계산 방법\n  - A(ace)는 1 혹은 11\n  - J, Q, K는 10\n  - 나머지는 숫자 그대로 합산됩니다.\n  예) 받은 카드가 5, A, A 라면 5 + 1 + 11 = 17 입니다.\n4) 플레이어는 원하는 만큼 카드를 받을 수 있고\n딜러는 17 이상이면 추가 카드를 받지 않습니다.</string>
+    <string name="rules_blackJack">※ 블랙잭!</string>
     <string name="rules_blackJackText">처음 받은 카드 2장으로 21이 될 경우 블랙잭이 됩니다.</string>4
-    <string name="rules_bust">Bust!</string>
+    <string name="rules_bust">※ Bust!</string>
     <string name="rules_bustText">카드의 총 합이 21을 초과할 경우 자동으로 패배하게 됩니다.</string>
-    <string name="rules_hit">Hit!</string>
+    <string name="rules_hit">※ Hit!</string>
     <string name="rules_hitText">플레이어가 처음 두 장의 카드 외 딜러에게 추가 카드를 요청하는 경우를 말한다.</string>
-    <string name="rules_stay">Stay!</string>
+    <string name="rules_stay">※ Stay!</string>
     <string name="rules_stayText">플레이어가 추가 카드를 원하지 않을 경우를 말한다.</string>
-    <string name="rules_victory">승리 조건</string>
+    <string name="rules_victory">※ 승리 조건</string>
     <string name="rules_victoryText">1) 처음에 받은 카드 두 장으로 Black Jack 을 달성하면 바로 승리하며 배팅액의 3배를 받습니다.\n2) Stay 후 카드를 합산하여 딜러보다 높을 경우 배팅액의 2배를 얻습니다.\n3) 플레이어가 Hit하여 Bust가 발생할 경우 배팅액을 잃어버립니다.</string>
+    <string name="rules_btnInfo">※ 돈 초기화 버튼</string>
+    <string name="rules_btnInfoText">금액을 100만원으로 초기화 해줍니다.</string>
 </resources>
