@@ -70,12 +70,6 @@
         android:textColor="#757575"
         android:textSize="15sp"/>
 
-    <!-- Notice
-    <View
-        android:background="#66bdbdbd"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" /> -->
-
     <!-- 닫기 버튼 -->
     <LinearLayout
         android:orientation="horizontal"
