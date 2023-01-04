@@ -106,10 +106,4 @@
         android:layout_width="85dp"
         android:layout_height="130dp"
         android:src="@drawable/back"/>
-    <ImageView
-        android:id="@+id/game_cardBack01"
-        android:layout_gravity="center"
-        android:layout_width="85dp"
-        android:layout_height="130dp"
-        android:src="@drawable/back"/>
 </FrameLayout>

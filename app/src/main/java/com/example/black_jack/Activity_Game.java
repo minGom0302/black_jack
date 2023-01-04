@@ -28,7 +28,6 @@ import java.util.TimerTask;
 public class Activity_Game extends AppCompatActivity {
     TextView countTv, moneyTv, totalMoneyTv;
     ImageView cardBack;
-    ImageView cardBack01;
     Button goBtn, stopBtn;
 
     Card cardActivity;
@@ -42,8 +41,10 @@ public class Activity_Game extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor sp_e;
     DecimalFormat format = new DecimalFormat("###,###");
+    ItemDecoration decoration = new ItemDecoration(-85);
     backspaceHandler bsHandler = new backspaceHandler(this);
 
+    // i 는 setting 에서 사용함
     int i = 0;
     int mySum = 0;
     int dealerSum = 0;
@@ -77,7 +78,6 @@ public class Activity_Game extends AppCompatActivity {
         dealerRecyclerView = findViewById(R.id.game_dealerRecyclerView);
 
         cardBack = findViewById(R.id.game_cardBack);
-        cardBack01 = findViewById(R.id.game_cardBack01);
         countTv = findViewById(R.id.game_countTv);
         totalMoneyTv = findViewById(R.id.game_TotalMoneyTv);
         moneyTv = findViewById(R.id.game_moneyTv);
@@ -128,16 +128,12 @@ public class Activity_Game extends AppCompatActivity {
     }
 
     private void moveCard(int cnd) {
-        int i = 0;
         Animation a = null;
         if(cnd == 0) {
-             i = View.VISIBLE;
              a = animation;
         } else if(cnd == 1) {
-             i = View.INVISIBLE;
              a = animationReverse;
         }
-        cardBack01.setVisibility(i);
         cardBack.startAnimation(a);
     }
 
@@ -152,10 +148,6 @@ public class Activity_Game extends AppCompatActivity {
 
             countTv.setText(String.valueOf(mySum));
 
-            if(mySum > 21) {
-                isBust(1);
-            }
-
         } else if(cnd == 1) {
             // 딜러 카드 뽑아서 화면에 셋팅
             dealerCards.add(dealer.getCard(cards));
@@ -163,10 +155,12 @@ public class Activity_Game extends AppCompatActivity {
             dealerAdapterCard.setCardList(dealerCards, 1);
             dealerAdapterCard.setFirst(0);
             dealerRecyclerView.setAdapter(dealerAdapterCard);
+        }
 
-            if(dealerSum > 21) {
-                isBust(0);
-            }
+        if(mySum > 21) {
+            isBust(1);
+        } else if(dealerSum > 21) {
+            isBust(0);
         }
     }
 
@@ -347,6 +341,7 @@ public class Activity_Game extends AppCompatActivity {
                 myAdapterCard = new Adapter_card(myCards);
                 myRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
                 myRecyclerView.setAdapter(myAdapterCard);
+                myRecyclerView.addItemDecoration(decoration);
 
                 countTv.setText(String.valueOf(mySum));
 
@@ -373,6 +368,7 @@ public class Activity_Game extends AppCompatActivity {
                 dealerAdapterCard = new Adapter_card(dealerCards);
                 dealerRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
                 dealerRecyclerView.setAdapter(dealerAdapterCard);
+                dealerRecyclerView.addItemDecoration(decoration);
 
                 dealerSet = false;
             } else {
