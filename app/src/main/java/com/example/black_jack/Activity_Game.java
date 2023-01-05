@@ -7,17 +7,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -56,8 +59,10 @@ public class Activity_Game extends AppCompatActivity {
     boolean dealerA = false;
     boolean mySet = true;
     boolean dealerSet = true;
+    boolean insuranceT = false;
     String money;
     String nowMoney;
+    String insuranceMoney;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
@@ -101,8 +106,17 @@ public class Activity_Game extends AppCompatActivity {
         // 나눠가질 카드 뭉치 만들기 (52장 가득) > 3묶음 함
         cards = dealer.setCards();
 
-        Intent intent = new Intent(Activity_Game.this, Activity_Popup.class);
-        startActivityForResult(intent, 100);
+        goIntent(100);
+    }
+
+    private void goIntent( int requestCode) {
+        Intent intent = null;
+        if(requestCode == 100) {
+            intent = new Intent(Activity_Game.this, Activity_Popup.class);
+        } else if(requestCode == 200) {
+            intent = new Intent(Activity_Game.this, Activity_Popup_Insurance.class);
+        }
+        startActivityForResult(intent, requestCode);
     }
 
     private void setting() {
@@ -118,7 +132,9 @@ public class Activity_Game extends AppCompatActivity {
                         moveCard(1);
                     } else if(i == 3) {
                         moveCard(1);
-                        blackJackCheck();
+                        if(!insuranceT) {
+                            blackJackCheck(0);
+                        }
                     }
                     i++;
                 });
@@ -134,13 +150,16 @@ public class Activity_Game extends AppCompatActivity {
         } else if(cnd == 1) {
              a = animationReverse;
         }
-        cardBack.startAnimation(a);
+        if(!insuranceT) {
+            cardBack.startAnimation(a);
+        }
     }
 
     private void go(int cnd) {
+        Card card = dealer.getCard(cards);
         if(cnd == 0) {
             // 내 카드 뽑아서 화면에 보여주고 셋팅
-            myCards.add(dealer.getCard(cards));
+            myCards.add(card);
             sum(1);
             myAdapterCard.setCardList(myCards, 0);
             myRecyclerView.removeAllViews();
@@ -150,7 +169,7 @@ public class Activity_Game extends AppCompatActivity {
 
         } else if(cnd == 1) {
             // 딜러 카드 뽑아서 화면에 셋팅
-            dealerCards.add(dealer.getCard(cards));
+            dealerCards.add(card);
             sum(0);
             dealerAdapterCard.setCardList(dealerCards, 1);
             dealerAdapterCard.setFirst(0);
@@ -222,17 +241,23 @@ public class Activity_Game extends AppCompatActivity {
         }
     }
 
-    private void blackJackCheck() {
+    private void blackJackCheck(int cnd) {
         // 블랙잭 (A와 10) 확인
         new Handler().postDelayed(() -> {
             goBtn.setEnabled(true);
             stopBtn.setEnabled(true);
-            if(dealerSum == 21) {
-                showDialog("Black Jack!!", "딜러가 Black Jack을 달성했습니다.\n당신의 패배입니다.");
-                moneyCal(0);
-            } else if(mySum == 21) {
+            if(mySum == 21) {
                 showDialog("Black Jack!!", "당신이 Black Jack을 달성했습니다.\n당신의 승리입니다.");
                 moneyCal(3);
+            } else if(dealerSum == 21) {
+                if(cnd == 0) {
+                    showDialog("Black Jack!!", "딜러가 Black Jack을 달성했습니다.\n당신의 패배입니다.");
+                    moneyCal(0);
+                } else if(cnd == 1) {
+                    showDialog("Black Jack!!", "딜러가 Black Jack을 달성했지만 Insurance를 통해 배팅에 성공했습니다.");
+                    money = insuranceMoney;
+                    moneyCal(3);
+                }
             }
         }, 1300);
     }
@@ -336,7 +361,8 @@ public class Activity_Game extends AppCompatActivity {
         public void onAnimationEnd(Animation animation) {
             if(mySet) {
                 // 내가 카드 받고 합을 확인하고 adpater를 통해 recyclerview 에 표현
-                myCards.add(dealer.getCard(cards));
+                Card card = dealer.getCard(cards);
+                myCards.add(card);
                 sum(1);
                 myAdapterCard = new Adapter_card(myCards);
                 myRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
@@ -363,7 +389,8 @@ public class Activity_Game extends AppCompatActivity {
         public void onAnimationEnd(Animation animation) {
             if(dealerSet) {
                 // 딜러 카드 셋팅 > 첫 장은 보이게
-                dealerCards.add(dealer.getCard(cards));
+                Card card = dealer.getCard(cards);
+                dealerCards.add(card);
                 sum(0);
                 dealerAdapterCard = new Adapter_card(dealerCards);
                 dealerRecyclerView.setLayoutManager(new LinearLayoutManager(Activity_Game.this, RecyclerView.HORIZONTAL, false));
@@ -371,6 +398,10 @@ public class Activity_Game extends AppCompatActivity {
                 dealerRecyclerView.addItemDecoration(decoration);
 
                 dealerSet = false;
+
+                if(card.getNumber().equals("1") || card.getNumber().equals("10") || card.getNumber().equals("11") || card.getNumber().equals("12") || card.getNumber().equals("13")) {
+                    insurance();
+                }
             } else {
                 go(1);
             }
@@ -380,24 +411,68 @@ public class Activity_Game extends AppCompatActivity {
         public void onAnimationRepeat(Animation animation) { }
     };
 
-    @SuppressLint("SetTextI18n")
+    private void insurance() {
+        if (nowMoney.equals("0")) {
+            Toast.makeText(this, "보유 금액이 없어 추가 배팅은 넘어갑니다.", Toast.LENGTH_SHORT).show();
+        } else {
+            goIntent(200);
+            insuranceT = true;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 100) {
             if(resultCode == RESULT_OK) {
                 if(data != null) {
-                    money = data.getStringExtra("money");
-                    nowMoney = data.getStringExtra("resultMoney");
-
-                    String s1 = format.format(Integer.parseInt(money));
-                    String s2 = format.format(Integer.parseInt(nowMoney));
-
-                    totalMoneyTv.setText("현재 배팅액 : " + s1 + "만원");
-                    moneyTv.setText("보유 금액 : " + s2 + "만원");
-                    setting();
+                    bettingAfter(data, 0);
                 }
             }
+        } else if(requestCode == 200) {
+            if(resultCode == RESULT_OK) {
+                if(data != null) {
+                    bettingAfter(data, 1);
+
+                    insuranceT = false;
+                    moveCard(1);
+                    blackJackCheck(1);
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void bettingAfter(Intent data, int cnd) {
+        nowMoney = data.getStringExtra("resultMoney");
+        insuranceMoney = data.getStringExtra("insuranceMoney");
+
+        int i1 = 0;
+        int i2 = Integer.parseInt(nowMoney);
+        int i1_1 = 0;
+
+        if(cnd == 0) {
+            money = data.getStringExtra("money");
+            i1 = Integer.parseInt(money);
+        } else if(cnd == 1) {
+            i1 = Integer.parseInt(money);
+            i1_1 = Integer.parseInt(insuranceMoney);
+            i1 = i1 + i1_1;
+        }
+
+        String s1 = format.format(i1);
+        String s2 = format.format(i2);
+
+        if(cnd == 0) {
+            totalMoneyTv.setText("현재 배팅액 : " + s1 + "만원");
+            moneyTv.setText("보유 금액 : " + s2 + "만원");
+
+            setting();
+        } else if(cnd == 1) {
+            String s1_1 = format.format(i1_1);
+
+            totalMoneyTv.setText("(Insurance Money : " + s1_1 + "만원)\n" + "현재 배팅액 : " + s1 + "만원");
+            moneyTv.setText("보유 금액 : " + s2 + "만원");
         }
     }
 
