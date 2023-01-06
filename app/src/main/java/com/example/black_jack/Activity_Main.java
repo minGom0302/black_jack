@@ -12,6 +12,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+
 import java.text.DecimalFormat;
 import java.util.Objects;
 
@@ -22,6 +27,7 @@ public class Activity_Main extends AppCompatActivity {
     SharedPreferences.Editor sp_e;
     DecimalFormat format = new DecimalFormat("###,###");
     backspaceHandler bsHandler = new backspaceHandler(Activity_Main.this);
+    private InterstitialAd ads;
 
     String money;
 
@@ -41,13 +47,30 @@ public class Activity_Main extends AppCompatActivity {
         ruleBtn = findViewById(R.id.main_gameRuleBtn);
         resetBtn = findViewById(R.id.main_resetBtn);
 
+        // 광고를 보여주기 위한 객체 생성
+        MobileAds.initialize(Activity_Main.this, "ca-app-pub-3940256099942544~3347511713"); // 앱 ID > 테스트 ID
+        ads = new InterstitialAd(Activity_Main.this);
+        ads.setAdUnitId("ca-app-pub-3940256099942544/1033173712"); // 광고 ID > 앱을 등록해야지만 나오기 때문에 테스트 ID 넣어둠
+        ads.loadAd(new AdRequest.Builder().build());
+
+        // 광고 끝나고 실행할 것들 작성
+        ads.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                sp_e.putString("money", "100");
+                sp_e.commit();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+                ads.loadAd(new AdRequest.Builder().build());
+            }
+        });
+
         startBtn.setOnClickListener(v -> {
             if(money.equals("0")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Main.this);
                 builder.setTitle("경고").setMessage("보유하신 금액이 없습니다.\n초기화 후 진행해주세요.");
-                builder.setPositiveButton("예", (dialogInterface, i) -> {
-
-                });
+                builder.setPositiveButton("예", (dialogInterface, i) -> { });
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
@@ -60,11 +83,12 @@ public class Activity_Main extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Main.this);
             builder.setTitle("경고").setMessage("보유하신 금액을 100만원으로 초기화하시겠습니까?");
             builder.setPositiveButton("예", (dialogInterface, i) -> {
-                sp_e.putString("money", "100");
-                sp_e.commit();
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
+                // 광고 실행
+                if(ads.isLoaded()) {
+                    ads.show();
+                } else {
+                    Log.i("TAG", "The interstitial wasn't loaded yet.");
+                }
             });
             builder.setNeutralButton("아니오", (dialogInterface, i) -> {
 
