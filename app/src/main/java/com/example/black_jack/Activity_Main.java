@@ -60,7 +60,7 @@ public class Activity_Main extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Main.this);
             builder.setTitle("경고").setMessage("보유하신 금액을 100만원으로 초기화하시겠습니까?");
             builder.setPositiveButton("예", (dialogInterface, i) -> {
-                sp_e.putString("money", "20000");
+                sp_e.putString("money", "100");
                 sp_e.commit();
                 Intent intent = getIntent();
                 finish();
