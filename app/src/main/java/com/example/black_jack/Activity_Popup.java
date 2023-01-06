@@ -46,12 +46,30 @@ public class Activity_Popup extends Activity {
 
         Button okBtn = findViewById(R.id.popup_okBtn);
         Button allInBtn = findViewById(R.id.popup_AllInBtn);
+        Button plus10Btn = findViewById(R.id.popup_plus10Btn);
+        Button plus50Btn = findViewById(R.id.popup_plus50Btn);
+        Button plus100Btn = findViewById(R.id.popup_plus100Btn);
         moneyEt = findViewById(R.id.popup_moneyEt);
         nowMoneyTv = findViewById(R.id.popup_nowMoneyTv);
 
         nowMoney = sp.getString("money", "100");
-        strNowMoney = format.format(Integer.parseInt(nowMoney));
-        nowMoneyTv.setText("보유금액 : " + strNowMoney + "만원");
+        int money01 = Integer.parseInt(nowMoney);
+
+        if(money01 < 10000) {
+            strNowMoney = format.format(money01);
+            nowMoneyTv.setText("보유금액 : " + strNowMoney + "만원");
+        } else if(money01%10000 == 0) {
+            int i1 = money01 / 10000;
+            strNowMoney = format.format(money01);
+            nowMoneyTv.setText("보유금액 : " + i1 + "억원");
+        } else {
+            int i1 = money01 / 10000;
+            int i2 = money01 % 10000;
+            String s1 = format.format(i1);
+            String s2 = format.format(i2);
+
+            nowMoneyTv.setText("보유금액 : " + s1 + "억 " + s2 + "만원");
+        }
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -87,6 +105,18 @@ public class Activity_Popup extends Activity {
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         });
+
+        plus10Btn.setOnClickListener(v -> plusMoney(10));
+        plus50Btn.setOnClickListener(v -> plusMoney(50));
+        plus100Btn.setOnClickListener(v -> plusMoney(100));
+    }
+
+    private void plusMoney(int value) {
+        String money = String.valueOf(moneyEt.getText()).replaceAll(",", "");
+        int beforeMoney = Integer.parseInt(money);
+        int afterMoney = beforeMoney + value;
+        money = format.format(afterMoney);
+        moneyEt.setText(money);
     }
 
     private void battingEnd(int cnd) {

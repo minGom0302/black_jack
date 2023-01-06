@@ -27,4 +27,8 @@
     <string name="pass">넘기기</string>
     <string name="popupTitle">※ Insurance!</string>
     <string name="popupMsg">딜러의 첫 카드가 10 혹은 A입니다.\n딜러의 블랙잭에 추가 배팅을 하시겠습니까?</string>
+    <string name="plus10">+ 10 만원</string>
+    <string name="plus50">+ 50 만원</string>
+    <string name="plus100">+ 100 만원</string>
+    <string name="zero">0</string>
 </resources>

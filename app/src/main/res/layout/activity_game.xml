@@ -40,21 +40,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/game_goBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:layout_marginHorizontal="10dp"
-                android:text="HIT" />
+                android:background="@drawable/icon_hit" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/game_stopBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:layout_marginHorizontal="10dp"
-                android:text="STAY" />
+                android:background="@drawable/icon_stay" />
         </LinearLayout>
 
         <TextView

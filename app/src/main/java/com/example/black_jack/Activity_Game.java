@@ -92,9 +92,8 @@ public class Activity_Game extends AppCompatActivity {
         goBtn.setEnabled(false);
         stopBtn.setEnabled(false);
 
-        String money = sp.getString("money", "100");
-        String s1 = format.format(Integer.parseInt(money));
-        moneyTv.setText("보유금액 : " + s1 + "만원");
+        money = sp.getString("money", "100");
+        setMoneyText(0, Integer.parseInt(money), 0, -1);
 
         goBtn.setOnClickListener(v -> moveCard(0));
         stopBtn.setOnClickListener(v -> whoWin());
@@ -442,24 +441,25 @@ public class Activity_Game extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void bettingAfter(Intent data, int cnd) {
         nowMoney = data.getStringExtra("resultMoney");
         insuranceMoney = data.getStringExtra("insuranceMoney");
 
         int i1 = 0;
         int i2 = Integer.parseInt(nowMoney);
-        int i1_1 = 0;
+        int i3 = 0;
 
         if(cnd == 0) {
             money = data.getStringExtra("money");
             i1 = Integer.parseInt(money);
         } else if(cnd == 1) {
             i1 = Integer.parseInt(money);
-            i1_1 = Integer.parseInt(insuranceMoney);
-            i1 = i1 + i1_1;
+            i3 = Integer.parseInt(insuranceMoney);
+            i1 = i1 + i3;
         }
 
+        setMoneyText(i1, i2, i3, cnd);
+/*
         String s1 = format.format(i1);
         String s2 = format.format(i2);
 
@@ -473,6 +473,57 @@ public class Activity_Game extends AppCompatActivity {
 
             totalMoneyTv.setText("(Insurance Money : " + s1_1 + "만원)\n" + "현재 배팅액 : " + s1 + "만원");
             moneyTv.setText("보유 금액 : " + s2 + "만원");
+        }*/
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setMoneyText(int battingMoney, int myMoney, int insuranceMoney, int cnd) {
+        String battingMsg = "현재 배팅액 : ";
+
+        if(myMoney < 10000) {
+            String s1 = format.format(myMoney);
+            moneyTv.setText("보유금액 : " + s1 + "만원");
+        } else if(myMoney%10000 == 0) {
+            int i1 = myMoney / 10000;
+            moneyTv.setText("보유금액 : " + i1 + "억원");
+        } else {
+            int i1 = myMoney / 10000;
+            int i2 = myMoney % 10000;
+            String s1 = format.format(i1);
+            String s2 = format.format(i2);
+            moneyTv.setText("보유금액 : " + s1 + "억 " + s2 + "만원");
+        }
+
+        if(battingMoney < 10000) {
+            String s1 = format.format(battingMoney);
+            battingMsg += s1 + "만원";
+        } else if(battingMoney%10000 == 0) {
+            int i1 = battingMoney / 10000;
+            battingMsg += + i1 + "억원";
+        } else {
+            int i1 = battingMoney / 10000;
+            int i2 = battingMoney % 10000;
+            String s1 = format.format(i1);
+            String s2 = format.format(i2);
+            battingMsg += s1 + "억 " + s2 + "만원";
+        }
+
+        if(insuranceMoney < 10000) {
+            String s1 = format.format(insuranceMoney);
+            totalMoneyTv.setText("(Insurance Money : " + s1 + "만원)\n" + battingMsg);
+        } else if(insuranceMoney%10000 == 0) {
+            int i1 = insuranceMoney / 10000;
+            totalMoneyTv.setText("(Insurance Money : " + i1 + "억원)\n" + battingMsg);
+        } else {
+            int i1 = insuranceMoney / 10000;
+            int i2 = insuranceMoney % 10000;
+            String s1 = format.format(i1);
+            String s2 = format.format(i2);
+            totalMoneyTv.setText("(Insurance Money : " + s1 + "억 " + s2 + "만원)\n" + battingMsg);
+        }
+
+        if(cnd == 0) {
+            setting();
         }
     }
 

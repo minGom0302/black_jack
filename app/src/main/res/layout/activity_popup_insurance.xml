@@ -33,6 +33,16 @@
         android:text="@string/popupMsg"
         android:textColor="#000000" />
 
+    <TextView
+        android:id="@+id/insurance_nowMoneyTv"
+        android:paddingTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_info"
+        android:textColor="#757575"
+        android:textSize="15sp"/>
+
     <!-- Notice -->
     <LinearLayout
         android:paddingHorizontal="24dp"
@@ -55,7 +65,7 @@
             android:layout_weight="2.5"
             android:layout_marginBottom="3dp"
             android:inputType="number"
-            android:text="0"
+            android:text="@string/zero"
             android:textSize="15sp"
             android:textColor="#000000"
             android:alpha="0.87"
@@ -69,17 +79,43 @@
             android:gravity="center"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/insurance_nowMoneyTv"
-        android:paddingBottom="10dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/popup_info"
-        android:textColor="#757575"
-        android:textSize="15sp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/insurance_plus10Btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#ffffff"
+            android:text="@string/plus10"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/insurance_plus50Btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#ffffff"
+            android:text="@string/plus50"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/insurance_plus100Btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#ffffff"
+            android:text="@string/plus100"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+    </LinearLayout>
 
-    <!-- 닫기 버튼 -->
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center"
@@ -116,6 +152,5 @@
             android:textSize="15sp"
             android:textColor="#ff7a00"/>
     </LinearLayout>
-    <!--// 닫기 버튼 -->
 
 </LinearLayout>
