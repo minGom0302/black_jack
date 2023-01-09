@@ -3,7 +3,7 @@
     <string name="app_creator">made by 배.상.민</string>
     <string name="main_game_start">게임 시작</string>
     <string name="main_game_info">게임 규칙</string>
-    <string name="main_money_reset">돈 초기화</string>
+    <string name="main_money_reset"> + 100만원 </string>
     <string name="popup_ok">확인</string>
     <string name="popup_allin">올인</string>
     <string name="popup_title">얼마 배팅하시겠습니까?</string>
