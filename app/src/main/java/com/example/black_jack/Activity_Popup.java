@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.Button;
@@ -151,7 +150,6 @@ public class Activity_Popup extends Activity {
         } else if(cnd == 1) {
             // 전액 가져옴
             String strAllInMoney = strNowMoney.replaceAll(",", "");
-            Log.i("strAllInMoney", strAllInMoney);
             int intAllInMoney = Integer.parseInt(strAllInMoney); // 배팅 금액
 
             if(intAllInMoney == 0) {
