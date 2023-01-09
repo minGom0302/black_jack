@@ -65,6 +65,7 @@ public class Activity_Popup_Insurance extends Activity {
             strNowMoney = format.format(money01);
             nowMoneyTv.setText("보유금액 : " + i1 + "억원");
         } else {
+            strNowMoney = format.format(money01);
             int i1 = money01 / 10000;
             int i2 = money01 % 10000;
             String s1 = format.format(i1);
@@ -118,8 +119,12 @@ public class Activity_Popup_Insurance extends Activity {
         String money = String.valueOf(moneyEt.getText()).replaceAll(",", "");
         int beforeMoney = Integer.parseInt(money);
         int afterMoney = beforeMoney + value;
-        money = format.format(afterMoney);
-        moneyEt.setText(money);
+        if(afterMoney <= Integer.parseInt(nowMoney)) {
+            money = format.format(afterMoney);
+            moneyEt.setText(money);
+        } else {
+            Toast.makeText(this, "보유한 금액보다 많이 배팅할 수 없습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void battingEnd(int cnd) {

@@ -7,14 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -256,6 +253,8 @@ public class Activity_Game extends AppCompatActivity {
                     showDialog("Black Jack!!", "딜러가 Black Jack을 달성했지만 Insurance를 통해 배팅에 성공했습니다.");
                     money = insuranceMoney;
                     moneyCal(3);
+                } else if(cnd == 1 && insuranceMoney.equals("0")) {
+                    showDialog("Black Jack!!", "딜러가 Black Jack을 달성했습니다.\n추가 배팅을 하지 않아 획든한 금액은 없습니다.");
                 }
             }
         }, 1300);
@@ -459,21 +458,6 @@ public class Activity_Game extends AppCompatActivity {
         }
 
         setMoneyText(i1, i2, i3, cnd);
-/*
-        String s1 = format.format(i1);
-        String s2 = format.format(i2);
-
-        if(cnd == 0) {
-            totalMoneyTv.setText("현재 배팅액 : " + s1 + "만원");
-            moneyTv.setText("보유 금액 : " + s2 + "만원");
-
-            setting();
-        } else if(cnd == 1) {
-            String s1_1 = format.format(i1_1);
-
-            totalMoneyTv.setText("(Insurance Money : " + s1_1 + "만원)\n" + "현재 배팅액 : " + s1 + "만원");
-            moneyTv.setText("보유 금액 : " + s2 + "만원");
-        }*/
     }
 
     @SuppressLint("SetTextI18n")
@@ -499,7 +483,7 @@ public class Activity_Game extends AppCompatActivity {
             battingMsg += s1 + "만원";
         } else if(battingMoney%10000 == 0) {
             int i1 = battingMoney / 10000;
-            battingMsg += + i1 + "억원";
+            battingMsg += i1 + "억원";
         } else {
             int i1 = battingMoney / 10000;
             int i2 = battingMoney % 10000;

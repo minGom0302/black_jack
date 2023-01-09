@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -103,6 +104,13 @@ public class Activity_Main extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         money = sp.getString("money", "100");
+        // 돈 초기화는 돈이 0원일 때 보여지게 한다.
+        if(money.equals("0")) {
+            resetBtn.setVisibility(View.VISIBLE);
+        } else {
+            resetBtn.setVisibility(View.GONE);
+        }
+
 
         int money01 = Integer.parseInt(money);
         if(money01 < 10000) {

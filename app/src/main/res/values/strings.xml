@@ -26,6 +26,7 @@
     <string name="rules_btnInfoText">금액을 100만원으로 초기화 해줍니다.</string>
     <string name="pass">넘기기</string>
     <string name="popupTitle">※ Insurance!</string>
+    <string name="insuranceText">딜러의 카드가 10 혹은 A가 나올 경우 블랙잭이 나올 확률이 높으므로 추가 배팅을 통해 일종의 보험을 들 수 있다.\n인슈런스 영역은 반드시 배팅하지 않아도 되지만 배팅할 경우 딜러가 블랙잭이 나왔을 때 추가 배팅 금액의 2배를 돌려준다.</string>
     <string name="popupMsg">딜러의 첫 카드가 10 혹은 A입니다.\n딜러의 블랙잭에 추가 배팅을 하시겠습니까?</string>
     <string name="plus10">+ 10 만원</string>
     <string name="plus50">+ 50 만원</string>
